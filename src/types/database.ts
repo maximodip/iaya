@@ -203,6 +203,36 @@ export interface Database {
           }
         ]
       }
+      whitelist: {
+        Row: {
+          id: string
+          email: string
+          name: string | null
+          subscribed_at: string
+          has_registered: boolean
+          registered_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          name?: string | null
+          subscribed_at?: string
+          has_registered?: boolean
+          registered_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          name?: string | null
+          subscribed_at?: string
+          has_registered?: boolean
+          registered_at?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
