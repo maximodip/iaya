@@ -357,13 +357,13 @@ export default function NewProjectPage() {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={
+                  disabled={Boolean(
                     isLoading ||
                     clients.length === 0 ||
                     isAnalyzing ||
-                    (file && analysisError !== null) ||
+                    (file && analysisError != null) ||
                     (file && extractedPhases.length === 0 && !analysisError)
-                  }
+                  )}
                 >
                   {isLoading ? <LoadingSpinner size="sm" /> : 'Crear Proyecto'}
                 </Button>
