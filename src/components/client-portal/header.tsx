@@ -106,7 +106,7 @@ export const ClientPortalHeader = ({ client, agency }: ClientPortalHeaderProps) 
               variant="ghost" 
               className="flex items-center gap-2 transition-all hover:bg-accent"
             >
-              <Avatar className="h-8 w-8 ring-2 ring-offset-2 ring-offset-background transition-all hover:ring-primary/50" style={{ ringColor: `${primaryColor}40` }}>
+              <Avatar className="h-8 w-8 ring-2 ring-offset-2 ring-offset-background transition-all" style={{ borderColor: `${primaryColor}40` }}>
                 <AvatarFallback
                   className="text-sm font-medium"
                   style={{
