@@ -18,7 +18,8 @@ import {
   Home,
   Sparkles,
   FolderKanban,
-  Settings
+  Settings,
+  X
 } from 'lucide-react'
 
 const navLinks = [
@@ -52,6 +53,19 @@ export const Navbar = () => {
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent, href: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      if (href.startsWith('#')) {
+        const element = document.querySelector(href)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          setIsMobileMenuOpen(false)
+        }
+      }
+    }
+  }
+
   // Only show navbar on home page
   if (pathname !== '/') {
     return null
@@ -65,22 +79,20 @@ export const Navbar = () => {
           : 'border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-sm'
       }`}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center">
           {/* Logo */}
           <Link 
             href="/" 
             className="flex items-center gap-2 transition-transform hover:scale-105"
             aria-label="IAya - Inicio"
+            tabIndex={0}
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary transition-all">
-              <Rocket className="h-5 w-5 text-primary-foreground" />
-            </div>
             <span className="text-xl font-bold text-white">IAya</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-1 md:flex">
+          {/* Desktop Navigation - Centered */}
+          <nav className="hidden items-center gap-1 md:flex" aria-label="Navegación principal">
             {navLinks.map((link) => (
               <Button
                 key={link.href}
@@ -88,7 +100,12 @@ export const Navbar = () => {
                 asChild
                 className="text-zinc-400 transition-colors hover:text-white hover:bg-zinc-900/50"
               >
-                <Link href={link.href} onClick={(e) => handleNavClick(e, link.href)}>
+                <Link 
+                  href={link.href} 
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  onKeyDown={(e) => handleKeyDown(e, link.href)}
+                  aria-label={link.label}
+                >
                   {link.label}
                 </Link>
               </Button>
@@ -96,35 +113,41 @@ export const Navbar = () => {
           </nav>
 
           {/* Desktop CTA Buttons */}
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden items-center justify-end gap-3 md:flex">
             <Button 
               variant="ghost" 
               asChild 
               className="text-zinc-400 transition-colors hover:text-white hover:bg-zinc-900/50"
             >
-              <Link href="/login">Iniciar Sesión</Link>
+              <Link href="/login" aria-label="Iniciar Sesión">Iniciar Sesión</Link>
             </Button>
             <Button 
               asChild
               className="bg-primary text-primary-foreground transition-all hover:scale-105"
             >
-              <Link href="/register">
-                Comenzar Gratis
+              <Link href="/register" aria-label="Crear Cuenta">
+                Crear Cuenta
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <div className="flex items-center justify-end md:hidden">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
                 className="text-zinc-400 hover:text-white hover:bg-zinc-900/50 md:hidden"
                 aria-label="Abrir menú"
+                aria-expanded={isMobileMenuOpen}
               >
-                <Menu className="h-5 w-5" />
+                {isMobileMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </Button>
             </SheetTrigger>
             <SheetContent 
@@ -139,13 +162,17 @@ export const Navbar = () => {
                   <span className="text-xl font-bold text-white">IAya</span>
                 </SheetTitle>
               </SheetHeader>
-              <nav className="flex flex-col gap-1 px-4 py-6">
+              <nav className="flex flex-col gap-1 px-4 py-6" aria-label="Navegación móvil">
                 <Button
                   variant="ghost"
                   asChild
                   className="h-12 justify-start gap-3 rounded-lg px-4 text-base text-zinc-300 transition-colors hover:bg-zinc-900/50 hover:text-white"
                 >
-                  <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link 
+                    href="/" 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="Inicio"
+                  >
                     <Home className="h-5 w-5" />
                     Inicio
                   </Link>
@@ -162,6 +189,8 @@ export const Navbar = () => {
                       onClick={(e) => {
                         handleNavClick(e, link.href)
                       }}
+                      onKeyDown={(e) => handleKeyDown(e, link.href)}
+                      aria-label={link.label}
                     >
                       <link.icon className="h-5 w-5" />
                       {link.label}
@@ -174,7 +203,11 @@ export const Navbar = () => {
                   asChild 
                   className="h-12 justify-start gap-3 rounded-lg px-4 text-base text-zinc-300 transition-colors hover:bg-zinc-900/50 hover:text-white"
                 >
-                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link 
+                    href="/login" 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="Iniciar Sesión"
+                  >
                     Iniciar Sesión
                   </Link>
                 </Button>
@@ -182,16 +215,22 @@ export const Navbar = () => {
                   asChild
                   className="mt-2 h-12 justify-start gap-3 rounded-lg bg-primary px-4 text-base text-primary-foreground transition-all hover:bg-primary/90"
                 >
-                  <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                    Comenzar Gratis
+                  <Link 
+                    href="/register" 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="Crear Cuenta"
+                  >
+                    Crear Cuenta
                     <ArrowRight className="ml-auto h-5 w-5" />
                   </Link>
                 </Button>
               </nav>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
       </div>
     </header>
   )
 }
+
